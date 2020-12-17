@@ -39,31 +39,34 @@ void nvixnu__brent_kung_scan_by_block_kernel(double *input, double *output, cons
 	__syncthreads();
 
 
-	for(unsigned int stride = 1; stride < blockDim.x; stride *= 2){
+	for(unsigned int stride = 1; stride <= blockDim.x; stride *= 2){
 		__syncthreads();
 		int idx = (threadIdx.x + 1) * 2 * stride - 1;
-		if(idx < blockDim.x){
+		if(idx < blockDim.x && (idx - stride) < blockDim.x){
 			section_sums[idx] += section_sums[idx - stride];
 		}
 	}
 
-	for(int stride = blockDim.x/4; stride > 0; stride /=2){
+	for(int stride = blockDim.x/2; stride > 0; stride /=2){
 		__syncthreads();
 		int idx = (threadIdx.x + 1) * 2 *stride - 1;
-		if((idx + stride) < blockDim.x){
+		if((idx + stride) < blockDim.x && idx < blockDim.x){
 			section_sums[idx + stride] += section_sums[idx];
 		}
 	}
 	__syncthreads();
 
-	output[tid] = section_sums[threadIdx.x];
+	if(tid < length){
+		output[tid] = section_sums[threadIdx.x];
+	}
+
 	if(last_sum != NULL && threadIdx.x == (blockDim.x - 1)){
 		last_sum[blockIdx.x] = section_sums[threadIdx.x];
 	}
 }
 
 __global__
-void nvixnu__kogge_stone_3_phase_scan_by_block_kernel(double *input, double *output, const int length, const int section_length, double *last_sum){
+void nvixnu__3_phase_kogge_stone_scan_by_block_kernel(double *input, double *output, const int length, const int section_length, double *last_sum){
 	extern __shared__ double section_sums[];
 	int b_dim = blockDim.x;
 

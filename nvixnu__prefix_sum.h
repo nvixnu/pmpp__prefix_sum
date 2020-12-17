@@ -50,7 +50,7 @@ void nvixnu__brent_kung_scan_by_block_kernel(double *input, double *output, cons
  * @param last_sum Global memory array pointer (For hierarchical scan) or NULL. The global array holds the scan value of the last section's element.
  */
 __global__
-void nvixnu__kogge_stone_3_phase_scan_by_block_kernel(double *input, double *output, const int length, const int section_length, double *last_sum);
+void nvixnu__3_phase_kogge_stone_scan_by_block_kernel(double *input, double *output, const int length, const int section_length, double *last_sum);
 
 
 #endif /* NVIXNU__PREFIX_SUM_H_ */
