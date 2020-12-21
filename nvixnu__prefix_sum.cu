@@ -11,6 +11,8 @@ void nvixnu__kogge_stone_scan_by_block_kernel(double *input, double *output, con
 
 	if(tid < length){
 		section_sums[threadIdx.x] = input[tid];
+	}else{
+		section_sums[threadIdx.x] = 0.0;
 	}
 
 	unsigned int stride;
@@ -34,6 +36,8 @@ void nvixnu__brent_kung_scan_by_block_kernel(double *input, double *output, cons
 
 	if(tid < length){
 		section_sums[threadIdx.x] = input[tid];
+	}else{
+		section_sums[threadIdx.x] = 0.0;
 	}
 
 	__syncthreads();
@@ -81,8 +85,13 @@ void nvixnu__3_phase_kogge_stone_scan_by_block_kernel(double *input, double *out
 		int shared_mem_index = i*b_dim + threadIdx.x;
 		int input_index = blockIdx.x*section_length + shared_mem_index;
 		//This comparison could be removed if we handle the last phase separately and using the dynamic blockIndex assignment
-		if(input_index < length && shared_mem_index < section_length){
-			section_sums[shared_mem_index] = input[input_index];
+		if(shared_mem_index < section_length){
+			if(input_index < length){
+				section_sums[shared_mem_index] = input[input_index];
+			}else{
+				section_sums[shared_mem_index] = 0.0;
+			}
+
 		}
 	}
 
