@@ -21,6 +21,19 @@ static inline void nvixnu__partial_prefix_sum_unit(double *input, double *output
 }
 
 /**
+ * Performs the single pass Kogge-Stone prefix sum on arbitrary sized inputs.
+ * @param input The input array
+ * @param output The output array
+ * @param length The arrays length
+ * @param scan_value Auxiliary array that holds the sum of each block
+ * @param flags Auxiliary array used to orchestrate the adjacent block synchonization.
+ * @param block_counter Auxiliary variable that holds the dynamic block id used in the adjacent block synchronization.
+ */
+__global__
+void nvixnu__single_pass_kogge_stone_full_scan_kernel(double *input, double *output, const int length, volatile double *scan_value, unsigned int *flags, unsigned int *block_counter);
+
+
+/**
  * Performs the Kogge-Stone prefix sum by block. The length of each "partial scan" section is up to blockDim.x.
  * @param input The input array
  * @param output The output array
