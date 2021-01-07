@@ -1,5 +1,5 @@
-#ifndef NVIXNU__PREFIX_SUM_H_
-#define NVIXNU__PREFIX_SUM_H_
+#ifndef PMPP__PREFIX_SUM_H_
+#define PMPP__PREFIX_SUM_H_
 
 /**
  * Performs the core of sequential prefix sum
@@ -11,7 +11,7 @@
 __host__
 __device__
 __attribute__((always_inline))
-static inline void nvixnu__partial_prefix_sum_unit(double *input, double *output, const int length, const int stride){
+static inline void pmpp__partial_prefix_sum_unit(double *input, double *output, const int length, const int stride){
 	double acc = input[stride - 1];
 	output[0] = acc;
 	for(int i = stride; i < length; i=i+stride){
@@ -30,7 +30,7 @@ static inline void nvixnu__partial_prefix_sum_unit(double *input, double *output
  * @param block_counter Auxiliary variable that holds the dynamic block id used in the adjacent block synchronization.
  */
 __global__
-void nvixnu__single_pass_kogge_stone_full_scan_kernel(double *input, double *output, const int length, volatile double *scan_value, unsigned int *flags, unsigned int *block_counter);
+void pmpp__single_pass_kogge_stone_full_scan_kernel(double *input, double *output, const int length, volatile double *scan_value, unsigned int *flags, unsigned int *block_counter);
 
 
 /**
@@ -41,7 +41,7 @@ void nvixnu__single_pass_kogge_stone_full_scan_kernel(double *input, double *out
  * @param last_sum Global memory array pointer (For hierarchical scan) or NULL. The global array holds the scan value of the last section's element.
  */
 __global__
-void nvixnu__kogge_stone_scan_by_block_kernel(double *input, double *output, const int length, double *last_sum);
+void pmpp__kogge_stone_scan_by_block_kernel(double *input, double *output, const int length, double *last_sum);
 
 
 /**
@@ -52,7 +52,7 @@ void nvixnu__kogge_stone_scan_by_block_kernel(double *input, double *output, con
  * @param last_sum Global memory array pointer (For hierarchical scan) or NULL. The global array holds the scan value of the last section's element.
  */
 __global__
-void nvixnu__brent_kung_scan_by_block_kernel(double *input, double *output, const int length, double *last_sum);
+void pmpp__brent_kung_scan_by_block_kernel(double *input, double *output, const int length, double *last_sum);
 
 /**
  * Performs the 3-phase Kogge-Stone prefix sum by block. The length of each "partial scan" section is up to sharedMemPerBlock.
@@ -63,7 +63,7 @@ void nvixnu__brent_kung_scan_by_block_kernel(double *input, double *output, cons
  * @param last_sum Global memory array pointer (For hierarchical scan) or NULL. The global array holds the scan value of the last section's element.
  */
 __global__
-void nvixnu__3_phase_kogge_stone_scan_by_block_kernel(double *input, double *output, const int length, const int section_length, double *last_sum);
+void pmpp__3_phase_kogge_stone_scan_by_block_kernel(double *input, double *output, const int length, const int section_length, double *last_sum);
 
 
-#endif /* NVIXNU__PREFIX_SUM_H_ */
+#endif /* PMPP__PREFIX_SUM_H_ */

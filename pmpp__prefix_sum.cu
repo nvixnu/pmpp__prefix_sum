@@ -1,9 +1,9 @@
 #include <math.h>
-#include "nvixnu__prefix_sum.h"
+#include "pmpp__prefix_sum.h"
 
 
 __global__
-void nvixnu__single_pass_kogge_stone_full_scan_kernel(double *input, double *output, const int length, volatile double *scan_value, unsigned int *flags, unsigned int *block_counter){
+void pmpp__single_pass_kogge_stone_full_scan_kernel(double *input, double *output, const int length, volatile double *scan_value, unsigned int *flags, unsigned int *block_counter){
 	extern __shared__ double spks_section_sums[];
 	__shared__ float previous_sum;
 	__shared__ int sbid;
@@ -49,7 +49,7 @@ void nvixnu__single_pass_kogge_stone_full_scan_kernel(double *input, double *out
 }
 
 __global__
-void nvixnu__kogge_stone_scan_by_block_kernel(double *input, double *output, const int length, double *last_sum){
+void pmpp__kogge_stone_scan_by_block_kernel(double *input, double *output, const int length, double *last_sum){
 	extern __shared__ double ks_section_sums[];
 
 	int tid = blockIdx.x*blockDim.x + threadIdx.x;
@@ -83,7 +83,7 @@ void nvixnu__kogge_stone_scan_by_block_kernel(double *input, double *output, con
 }
 
 __global__
-void nvixnu__brent_kung_scan_by_block_kernel(double *input, double *output, const int length, double *last_sum){
+void pmpp__brent_kung_scan_by_block_kernel(double *input, double *output, const int length, double *last_sum){
 	extern __shared__ double bk_section_sums[];
 
 	int tid = blockIdx.x*blockDim.x + threadIdx.x;
@@ -124,7 +124,7 @@ void nvixnu__brent_kung_scan_by_block_kernel(double *input, double *output, cons
 }
 
 __global__
-void nvixnu__3_phase_kogge_stone_scan_by_block_kernel(double *input, double *output, const int length, const int section_length, double *last_sum){
+void pmpp__3_phase_kogge_stone_scan_by_block_kernel(double *input, double *output, const int length, const int section_length, double *last_sum){
 	extern __shared__ double ks3p_section_sums[];
 	int b_dim = blockDim.x;
 
